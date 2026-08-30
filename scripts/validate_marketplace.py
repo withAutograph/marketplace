@@ -90,7 +90,7 @@ def validate() -> None:
             fail(f"Plugin {name} receipt endpoint is not canonical HTTPS /mcp.")
         if adapter != {"mcpServers": {name: {"type": "http", "url": endpoint}}}:
             fail(f"Plugin {name} adapter is not bound to its receipt endpoint.")
-        if receipt.get("tools") != TOOLS and name == "autograph-app-builder":
+        if receipt.get("tools") != TOOLS and name == "app-builder":
             fail("App Builder must expose exactly the five Autograph tools.")
         files = receipt.get("marketplaceFiles")
         if not isinstance(files, dict) or not files:

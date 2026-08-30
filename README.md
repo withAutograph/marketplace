@@ -16,7 +16,7 @@ codex plugin marketplace add withAutograph/marketplace
 Then install an available plugin:
 
 ```sh
-codex plugin add autograph-app-builder@autograph
+codex plugin add app-builder@autograph
 ```
 
 Refresh installed marketplace metadata with:

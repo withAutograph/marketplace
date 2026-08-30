@@ -84,7 +84,7 @@ def import_release(release_dir: Path, repository: str, version: str) -> str:
     name = receipt["name"]
     if not isinstance(name, str) or not name:
         raise ValueError("Release plugin name was invalid.")
-    if name == "autograph-app-builder" and receipt["tools"] != EXPECTED_TOOLS:
+    if name == "app-builder" and receipt["tools"] != EXPECTED_TOOLS:
         raise ValueError("App Builder release did not expose exactly five Autograph tools.")
     endpoint = receipt["endpoint"]
     if not isinstance(endpoint, str) or not endpoint.startswith("https://") or not endpoint.endswith("/mcp"):
