@@ -1,0 +1,14 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "app-builder",
+  "version": "0.2.1",
+  "description": "Design and create apps with Autograph App Builder.",
+  "author": {
+    "name": "Autograph",
+    "url": "https://github.com/withAutograph"
+  },
+  "homepage": "https://github.com/withAutograph/autograph-app-builder",
+  "repository": "https://github.com/withAutograph/autograph-app-builder",
+  "license": "MIT",
+  "keywords": ["autograph", "agent", "mcp", "agent-plugins", "app-builder"]
+}

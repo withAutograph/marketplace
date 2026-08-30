@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "app-builder": {
+      "type": "http",
+      "url": "https://new.autograph.so/mcp"
+    }
+  }
+}

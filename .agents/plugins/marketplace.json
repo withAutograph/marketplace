@@ -3,5 +3,18 @@
   "interface": {
     "displayName": "Autograph"
   },
-  "plugins": []
+  "plugins": [
+    {
+      "name": "app-builder",
+      "source": {
+        "source": "local",
+        "path": "./plugins/app-builder"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
 }
