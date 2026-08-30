@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#MISE description="Import one verified immutable plugin release into the marketplace"
+set -euo pipefail
+
+python3 scripts/import_release.py "$@"

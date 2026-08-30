@@ -1,0 +1,87 @@
+name: Import plugin release
+
+on:
+  workflow_dispatch:
+    inputs:
+      repository:
+        description: Public source repository in owner/name form
+        required: true
+        type: string
+      version:
+        description: Exact semantic version without the v prefix
+        required: true
+        type: string
+
+permissions:
+  attestations: read
+  contents: write
+  pull-requests: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@5228313ee0372e111a38da051671ca30fc5a96db # v3
+      - name: Validate immutable source selector
+        env:
+          SOURCE_REPOSITORY: ${{ inputs.repository }}
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          case "$SOURCE_REPOSITORY" in
+            withAutograph/*) ;;
+            *) echo "Only withAutograph releases may enter this marketplace." >&2; exit 1 ;;
+          esac
+          printf '%s' "$SOURCE_REPOSITORY" | grep -Eq '^withAutograph/[A-Za-z0-9_.-]+$'
+          printf '%s' "$RELEASE_VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([.-][A-Za-z0-9.-]+)?$'
+      - name: Download and verify immutable release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_REPOSITORY: ${{ inputs.repository }}
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          mkdir -p .artifacts/release
+          gh release download "v$RELEASE_VERSION" \
+            --repo "$SOURCE_REPOSITORY" \
+            --dir .artifacts/release
+          gh release verify "v$RELEASE_VERSION" --repo "$SOURCE_REPOSITORY"
+          (cd .artifacts/release && sha256sum --check SHA256SUMS)
+          for asset in .artifacts/release/*.tar.gz .artifacts/release/release-receipt.json .artifacts/release/SHA256SUMS; do
+            gh release verify-asset "v$RELEASE_VERSION" "$(basename "$asset")" \
+              --repo "$SOURCE_REPOSITORY"
+            gh attestation verify "$asset" --repo "$SOURCE_REPOSITORY"
+          done
+      - name: Import verified package
+        env:
+          SOURCE_REPOSITORY: ${{ inputs.repository }}
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          mise run marketplace:import -- \
+            --release-dir .artifacts/release \
+            --expected-repository "https://github.com/$SOURCE_REPOSITORY" \
+            --expected-version "$RELEASE_VERSION"
+          mise run check
+      - name: Open reviewed marketplace update
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_REPOSITORY: ${{ inputs.repository }}
+          RELEASE_VERSION: ${{ inputs.version }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          plugin_name="$(python3 -c 'import json; print(json.load(open(".artifacts/release/release-receipt.json"))["name"])')"
+          branch="release/$plugin_name-v$RELEASE_VERSION-$RUN_ID"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add .agents/plugins/marketplace.json plugins receipts
+          git diff --cached --exit-code && { echo "Release produced no marketplace change." >&2; exit 1; }
+          git commit -m "release: import $plugin_name v$RELEASE_VERSION"
+          git push "https://x-access-token:$GH_TOKEN@github.com/$GITHUB_REPOSITORY.git" "$branch"
+          gh pr create \
+            --repo "$GITHUB_REPOSITORY" \
+            --base main \
+            --head "$branch" \
+            --title "Release $plugin_name v$RELEASE_VERSION" \
+            --body "Imports the verified immutable \`v$RELEASE_VERSION\` release from \`$SOURCE_REPOSITORY\`. Marketplace CI independently validates the packaged bytes and retained receipt."
