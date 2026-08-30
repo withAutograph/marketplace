@@ -21,6 +21,16 @@ importer = load_module("import_release", ROOT / "scripts/import_release.py")
 
 
 class MarketplaceTests(unittest.TestCase):
+    def test_release_asset_verification_uses_downloaded_path(self) -> None:
+        workflow = (ROOT / ".github/workflows/import-release.yml").read_text()
+        self.assertIn(
+            'gh release verify-asset "v$RELEASE_VERSION" "$asset"', workflow
+        )
+        self.assertNotIn(
+            'gh release verify-asset "v$RELEASE_VERSION" "$(basename "$asset")"',
+            workflow,
+        )
+
     def test_empty_catalog_is_valid(self) -> None:
         validator.validate()
 

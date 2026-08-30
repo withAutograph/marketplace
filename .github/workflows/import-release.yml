@@ -49,7 +49,7 @@ jobs:
           gh release verify "v$RELEASE_VERSION" --repo "$SOURCE_REPOSITORY"
           (cd .artifacts/release && sha256sum --check SHA256SUMS)
           for asset in .artifacts/release/*.tar.gz .artifacts/release/release-receipt.json .artifacts/release/SHA256SUMS; do
-            gh release verify-asset "v$RELEASE_VERSION" "$(basename "$asset")" \
+            gh release verify-asset "v$RELEASE_VERSION" "$asset" \
               --repo "$SOURCE_REPOSITORY"
             gh attestation verify "$asset" --repo "$SOURCE_REPOSITORY"
           done
