@@ -88,8 +88,16 @@ def validate() -> None:
         endpoint = receipt.get("endpoint")
         if not isinstance(endpoint, str) or not endpoint.startswith("https://") or not endpoint.endswith("/mcp"):
             fail(f"Plugin {name} receipt endpoint is not canonical HTTPS /mcp.")
-        if adapter != {"mcpServers": {name: {"type": "http", "url": endpoint}}}:
+        server = adapter.get("mcpServers", {}).get(name)
+        if not isinstance(server, dict) or set(server) not in (
+            {"type", "url"},
+            {"type", "url", "oauth_resource"},
+        ):
             fail(f"Plugin {name} adapter is not bound to its receipt endpoint.")
+        if server.get("type") != "http" or server.get("url") != endpoint:
+            fail(f"Plugin {name} adapter is not bound to its receipt endpoint.")
+        if "oauth_resource" in server and server["oauth_resource"] != endpoint:
+            fail(f"Plugin {name} OAuth resource is not bound to its receipt endpoint.")
         if receipt.get("tools") != TOOLS and name == "app-builder":
             fail("App Builder must expose exactly the five Autograph tools.")
         files = receipt.get("marketplaceFiles")
