@@ -21,6 +21,17 @@ importer = load_module("import_release", ROOT / "scripts/import_release.py")
 
 
 class MarketplaceTests(unittest.TestCase):
+    def test_app_builder_authenticates_on_first_use(self) -> None:
+        import json
+
+        catalog = json.loads(
+            (ROOT / ".agents/plugins/marketplace.json").read_text()
+        )
+        app_builder = next(
+            plugin for plugin in catalog["plugins"] if plugin["name"] == "app-builder"
+        )
+        self.assertEqual(app_builder["policy"]["authentication"], "ON_USE")
+
     def test_release_asset_verification_uses_downloaded_path(self) -> None:
         workflow = (ROOT / ".github/workflows/import-release.yml").read_text()
         self.assertIn(

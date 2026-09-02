@@ -68,7 +68,7 @@ def validate() -> None:
             fail(f"Plugin {name} must use its local verified package.")
         if entry["policy"] != {
             "installation": "AVAILABLE",
-            "authentication": "ON_INSTALL",
+            "authentication": "ON_USE",
         }:
             fail(f"Plugin {name} has unsupported installation policy.")
         if not isinstance(entry["category"], str) or not entry["category"]:
