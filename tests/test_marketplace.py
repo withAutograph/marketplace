@@ -21,6 +21,18 @@ importer = load_module("import_release", ROOT / "scripts/import_release.py")
 
 
 class MarketplaceTests(unittest.TestCase):
+    def test_app_builder_adapter_binds_oauth_resource_when_present(self) -> None:
+        import json
+
+        adapter = json.loads((ROOT / "plugins/app-builder/.mcp.json").read_text())
+        server = adapter["mcpServers"]["app-builder"]
+        endpoint = json.loads(
+            (ROOT / "receipts/app-builder/0.2.5.json").read_text()
+        )["endpoint"]
+        self.assertEqual(server["url"], endpoint)
+        if "oauth_resource" in server:
+            self.assertEqual(server["oauth_resource"], endpoint)
+
     def test_app_builder_authenticates_on_first_use(self) -> None:
         import json
 
