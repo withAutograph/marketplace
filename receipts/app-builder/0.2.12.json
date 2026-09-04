@@ -1,0 +1,32 @@
+{
+  "format": "autograph-marketplace-import-v1",
+  "name": "app-builder",
+  "version": "0.2.12",
+  "source": {
+    "repository": "https://github.com/withAutograph/autograph-app-builder",
+    "sha": "3bb6f925d6c04a98110008467bef2c21e120f8d2",
+    "tree": "836f8752deb21948579fb68fa48c4cbca1c254d7"
+  },
+  "endpoint": "https://new.autograph.so/mcp",
+  "releaseArchive": {
+    "name": "app-builder-codex-marketplace-0.2.12.tar.gz",
+    "sha256": "8a0c5777a19dada7f86ed6c06fc003e4e5f94b05c53502183ffbf096e31a6432"
+  },
+  "tools": [
+    "autograph_start",
+    "autograph_get",
+    "autograph_send",
+    "autograph_respond",
+    "autograph_cancel"
+  ],
+  "marketplaceFiles": {
+    ".codex-plugin/plugin.json": "1ee7d6595187987a7b79601d782e6420207f7709f2e3723b650db32b0d660b9e",
+    ".mcp.json": "0b6c496c7fd48eaa2852057d11549c017e6008ecb3e58b4fb07b6539d69615f9",
+    "LICENSE": "b90bd8ba03ba91161d3d112eda512895c5ae90a59841470dbf66e7443d4af6b8",
+    "assets/autograph-icon.png": "eb0f4e84a2694a4a6bcc74c820eeb666c5d4413ea160e2083fa7eb6e7be2810a",
+    "mcp.json": "be20cc544fe57700a1c5fae8650400d4afd96c02af11157520665b7afcc83044",
+    "plugin.json": "c081b40532948faa1b1859044524d648dd60e97797c9cbc0e6547ecc5c209d87",
+    "skills/autograph-app-builder/SKILL.md": "9b5c1795bc9aca7f20a640ac84ff7c584e9510ed201da431d687005b7014c7d8",
+    "skills/autograph-app-builder/references/session-semantics.md": "f21a53b41bfe5e4d8c2ef0fe7626ca484160ebce219317d997ef22eae4e3959e"
+  }
+}
