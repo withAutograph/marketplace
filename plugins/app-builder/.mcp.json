@@ -1,9 +1,9 @@
 {
   "mcpServers": {
     "app-builder": {
+      "oauth_resource": "https://new.autograph.so/mcp",
       "type": "http",
-      "url": "https://new.autograph.so/mcp",
-      "oauth_resource": "https://new.autograph.so/mcp"
+      "url": "https://new.autograph.so/mcp"
     }
   }
 }

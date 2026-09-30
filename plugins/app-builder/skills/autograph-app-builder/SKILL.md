@@ -1,6 +1,6 @@
 ---
 name: autograph-app-builder
-description: Use Autograph App Builder to design, plan, create, and validate supported apps through its five durable tools.
+description: Create apps or continue app sessions through Autograph App Builder.
 ---
 
 # Autograph App Builder orchestration
@@ -13,9 +13,11 @@ or direct filesystem implementation.
 
 ## Workflow
 
-1. When the user asks to continue, resume, or pick up prior work, call
-   `autograph_get` without a `sessionId` first and offer the relevant recent
-   product sessions. Resume the chosen session with
+1. When continuing prior work, inspect an exact session already established in
+   the conversation with `autograph_get({ sessionId, cursor })`, using its saved
+   cursor when available. If the session is unknown or ambiguous, call
+   `autograph_get` without a `sessionId` and offer relevant recent sessions for
+   selection. Resume the established or selected session with
    `autograph_start({ resumeSessionId, clientRequestId })`. Start genuinely new
    work with `autograph_start({ prompt, clientRequestId })`. When the web App
    Builder supplies an opaque handoff ID, redeem it with
@@ -59,3 +61,9 @@ prototype and implementation plan are ready to review,” never that prototype o
 plan receipts are pending or complete.
 
 Read [session semantics](references/session-semantics.md) for cursor and status rules.
+
+## App Builder web implementation
+
+For App Builder web-workflow changes, keep authenticated mutations server-first. Use a strict, typed Server Action with `useActionState` for provider continuation, durable draft acknowledgement, and handoff creation. The action, not client code, owns validation, tenant authority, provider ordering, idempotency, and the terminal result. Client leaves may only render that result and perform browser-only effects such as SSE display, clipboard, custom protocol launch, popup behavior, and post-success navigation.
+
+Read [Server Action continuations](references/server-action-continuations.md) before changing these flows. Preserve Better Auth and opaque handoff boundaries; never substitute browser loopback requests or client-supplied authority for an authenticated Server Action.
